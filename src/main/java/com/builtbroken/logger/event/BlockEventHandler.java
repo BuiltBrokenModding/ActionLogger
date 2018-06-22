@@ -1,5 +1,7 @@
-package com.builtbroken.logger;
+package com.builtbroken.logger.event;
 
+import com.builtbroken.logger.ActionLogger;
+import com.builtbroken.logger.data.ActionType;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +13,7 @@ import net.minecraftforge.event.world.BlockEvent;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 6/21/2018.
  */
-public class EventHandler
+public class BlockEventHandler
 {
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event)
@@ -30,7 +32,7 @@ public class EventHandler
 
         ActionLogger.thread.logAction(
                 event.world, event.x, event.y, event.z,
-                "INTERACTION",
+                ActionType.INTERACTION,
                 data,
                 player);
     }
@@ -50,7 +52,7 @@ public class EventHandler
 
         ActionLogger.thread.logAction(
                 event.world, event.x, event.y, event.z,
-                "BLOCK-PLACE",
+                ActionType.BLOCK_PLACE,
                 data,
                 player);
     }
@@ -68,7 +70,7 @@ public class EventHandler
 
         ActionLogger.thread.logAction(
                 event.world, event.x, event.y, event.z,
-                "BLOCK-BREAK",
+                ActionType.BLOCK_BREAK,
                 data,
                 player);
     }

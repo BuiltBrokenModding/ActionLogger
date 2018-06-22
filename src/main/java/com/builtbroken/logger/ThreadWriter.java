@@ -1,11 +1,14 @@
 package com.builtbroken.logger;
 
+import com.builtbroken.logger.data.ActionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -20,15 +23,22 @@ public class ThreadWriter implements Runnable
     public static String dateFormat = "yyyy-MM-dd hh-mm";
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
 
-    public void logAction(World world, int x, int y, int z, String type, String data, EntityPlayer player)
+    public void logAction(World world, int x, int y, int z, ActionType type, String data, EntityPlayer player)
     {
         //TODO format
-        writeQueue.add(getTime() + " | "
-                + world.provider.dimensionId + ", " + x + ", " + y + ", " + z
-                + " | " + player.getGameProfile().getName()
-                + " | " + player.getGameProfile().getId()
-                + " | " + type
-                + " | " + data);
+        String out = getTime();
+        out += " | " + world.provider.dimensionId + ", " + x + ", " + y + ", " + z;
+
+        if (player != null)
+        {
+            out += " | " + player.getGameProfile().getName();
+            out += " | " + player.getGameProfile().getId();
+        }
+
+        out += " | " + type;
+        out += " | " + data;
+
+        writeQueue.add(out);
     }
 
     @Override
@@ -38,8 +48,11 @@ public class ThreadWriter implements Runnable
         {
             try
             {
-                saveAll();
-                Thread.sleep(1000 * 60);
+                if(writeQueue.size() > 1000)
+                {
+                    saveAll();
+                }
+                Thread.sleep(1000 * 60 * 10);
             }
             catch (Exception e)
             {
@@ -87,9 +100,16 @@ public class ThreadWriter implements Runnable
     {
         File file;
         int count = 0;
+
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int year  = localDate.getYear();
+        int month = localDate.getMonthValue();
+        int day   = localDate.getDayOfMonth();
+
         do
         {
-            file = new File(ActionLogger.saveFolder, "block-log-" + getTime() + (count == 0 ? "" : "--" + (++count)) + ".txt");
+            file = new File(ActionLogger.saveFolder, year + "/" + month + "/" + day + "/block-log-" + getTime() + (count == 0 ? "" : "--" + (++count)) + ".txt");
         }
         while (file.exists());
 
@@ -98,8 +118,6 @@ public class ThreadWriter implements Runnable
 
     public final String getTime()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        return simpleDateFormat.format(calendar.getTime());
+        return simpleDateFormat.format(new Date());
     }
 }
