@@ -1,6 +1,7 @@
 package com.builtbroken.logger.event;
 
 import com.builtbroken.logger.ActionLogger;
+import com.builtbroken.logger.data.event.EventDataBlockBreak;
 import com.builtbroken.logger.data.event.EventDataInteraction;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -21,6 +22,7 @@ public class BlockEventHandler
     @SubscribeEvent
     public void onPlaceBlock(BlockEvent.PlaceEvent event)
     {
+
         /*
         EntityPlayer player = event.player;
 
@@ -43,6 +45,7 @@ public class BlockEventHandler
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event)
     {
+        ActionLogger.log(EventDataBlockBreak.get(event));
         /*
         EntityPlayer player = event.getPlayer();
 

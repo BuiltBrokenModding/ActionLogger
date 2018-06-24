@@ -30,21 +30,41 @@ public class EventDatabase
             "tile varchar(255), " +
             "PRIMARY KEY (ID))";
 
+    private static final String CREATE_BLOCK_BREAK_TABLE = "CREATE TABLE BLOCK_BREAK " +
+            "(ID int NOT NULL AUTO_INCREMENT, " +
+            "time BIGINT, " +
+            "dim int, " +
+            "x int, " +
+            "y int, " +
+            "z int, " +
+            "username varchar(255), " +
+            "uuid varchar(255), " +
+            "item varchar(255), " +
+            "block varchar(255), " +
+            "meta TINYINT, " +
+            "tile varchar(255), " +
+            "PRIMARY KEY (ID))";
+
     public static void generateTablesIfMissing(Connection connection)
     {
-        ActionLogger.logger.info("EventDatabase: Checking that database has required tables");
-        if (!hasTable(connection, ActionLogger.database_name, "INTERACTION"))
+        createTableIfMissing(connection, "INTERACTION", CREATE_INTERACTION_TABLE);
+        createTableIfMissing(connection, "BLOCK_BREAK", CREATE_BLOCK_BREAK_TABLE);
+    }
+
+    protected static void createTableIfMissing(Connection connection, String name, String create_query)
+    {
+        if (!hasTable(connection, ActionLogger.database_name, name))
         {
-            ActionLogger.logger.info("EventDatabase: Failed to find 'interaction' table, creating...");
+            ActionLogger.logger.info("EventDatabase: Failed to find '" + name + "' table, creating...");
             try
             {
-                PreparedStatement preparedStmt = connection.prepareStatement(CREATE_INTERACTION_TABLE);
+                PreparedStatement preparedStmt = connection.prepareStatement(create_query);
                 preparedStmt.execute();
-                ActionLogger.logger.info("EventDatabase: Created 'interaction' table");
+                ActionLogger.logger.info("EventDatabase: Created '" + name + "' table");
             }
             catch (SQLException e)
             {
-                e.printStackTrace();
+                throw new RuntimeException("Failed to create table" + name, e);
             }
         }
     }

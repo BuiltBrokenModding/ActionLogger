@@ -3,7 +3,7 @@ package com.builtbroken.logger.data.event;
 import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
 import net.minecraft.block.Block;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,25 +14,23 @@ import java.util.UUID;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 6/23/2018.
  */
-public class EventDataInteraction extends EventData
+public class EventDataBlockBreak extends EventData
 {
-    private final static String query = "INSERT INTO INTERACTION (time, dim, x, y, z, face, action, username, uuid, item, block, meta, tile)"
-            + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final static String query = "INSERT INTO BLOCK_BREAK (time, dim, x, y, z, username, uuid, item, block, meta, tile)"
+            + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private final static DataPool<EventDataInteraction> dataPool = new DataPool(100);
+    private final static DataPool<EventDataBlockBreak> dataPool = new DataPool(100);
 
     public String username;
     public UUID uuid;
-    public PlayerInteractEvent.Action action;
 
     public String heldItem;
-    public int face;
 
     public String blockName;
     public String tileName;
     public int blockMeta;
 
-    protected EventDataInteraction(long time, int dim, int x, int y, int z)
+    protected EventDataBlockBreak(long time, int dim, int x, int y, int z)
     {
         super(ActionType.INTERACTION, time, dim, x, y, z);
     }
@@ -43,9 +41,7 @@ public class EventDataInteraction extends EventData
         super.onReclaimed();
         username = null;
         uuid = null;
-        action = null;
         heldItem = null;
-        face = 0;
         blockName = null;
         tileName = null;
         blockMeta = 0;
@@ -63,14 +59,9 @@ public class EventDataInteraction extends EventData
         String out = super.generateFlatFile();
 
         String data = "[ H: " + heldItem;
-        data += " - A: " + action;
-        if (action != PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
-        {
-            data += " - F: " + face;
-            data += " - B: " + blockName;
-            data += " - M: " + blockMeta;
-            data += " - T: " + tileName;
-        }
+        data += " - B: " + blockName;
+        data += " - M: " + blockMeta;
+        data += " - T: " + tileName;
         data += " ]";
 
         return out + " | " + data;
@@ -85,36 +76,32 @@ public class EventDataInteraction extends EventData
         preparedStmt.setInt(3, x);
         preparedStmt.setInt(4, y);
         preparedStmt.setInt(5, z);
-        preparedStmt.setInt(6, face);
-        preparedStmt.setInt(7, action.ordinal());
-        preparedStmt.setString(8, username);
-        preparedStmt.setString(9, uuid.toString());
-        preparedStmt.setString(10, heldItem);
-        preparedStmt.setString(11, blockName);
-        preparedStmt.setInt(12, blockMeta);
-        preparedStmt.setString(13, tileName);
+        preparedStmt.setString(6, username);
+        preparedStmt.setString(7, uuid.toString());
+        preparedStmt.setString(8, heldItem);
+        preparedStmt.setString(9, blockName);
+        preparedStmt.setInt(10, blockMeta);
+        preparedStmt.setString(11, tileName);
         preparedStmt.execute();
     }
 
-    public static EventDataInteraction get(long time, int dim, int x, int y, int z)
+    public static EventDataBlockBreak get(long time, int dim, int x, int y, int z)
     {
-        EventDataInteraction object = dataPool.get();
+        EventDataBlockBreak object = dataPool.get();
         if (object == null)
         {
-            object = new EventDataInteraction(time, dim, x, y, z);
+            object = new EventDataBlockBreak(time, dim, x, y, z);
         }
         return object;
     }
 
-    public static EventDataInteraction get(PlayerInteractEvent event)
+    public static EventDataBlockBreak get(BlockEvent.BreakEvent event)
     {
-        EventDataInteraction object = get(System.currentTimeMillis(), event.world.provider.dimensionId, event.x, event.y, event.z);
+        EventDataBlockBreak object = get(System.currentTimeMillis(), event.world.provider.dimensionId, event.x, event.y, event.z);
 
-        object.username = event.entityPlayer.getGameProfile().getName();
-        object.uuid = event.entityPlayer.getGameProfile().getId();
-        object.action = event.action;
-        object.face = event.face;
-        object.heldItem = heldItemAsString(event.entityPlayer);
+        object.username = event.getPlayer().getGameProfile().getName();
+        object.uuid = event.getPlayer().getGameProfile().getId();
+        object.heldItem = heldItemAsString(event.getPlayer());
         object.blockName = Block.blockRegistry.getNameForObject(event.world.getBlock(event.x, event.y, event.z));
         object.blockMeta = event.world.getBlockMetadata(event.x, event.y, event.z);
         object.tileName = "" + event.world.getTileEntity(event.x, event.y, event.z);
