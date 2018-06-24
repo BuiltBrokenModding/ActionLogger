@@ -3,13 +3,14 @@ package com.builtbroken.logger.data.event.block;
 import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
 import com.builtbroken.logger.data.event.EventData;
+import com.builtbroken.logger.data.user.User;
+import com.builtbroken.logger.database.UserDatabase;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.world.BlockEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -17,13 +18,12 @@ import java.util.UUID;
  */
 public class EventDataBlockBreak extends EventData
 {
-    private final static String query = "INSERT INTO BLOCK_BREAK (time, dim, x, y, z, username, uuid, item, block, meta, tile)"
-            + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final static String query = "INSERT INTO BLOCK_BREAK (time, dim, x, y, z, player, item, block, meta, tile)"
+            + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static DataPool<EventDataBlockBreak> dataPool = new DataPool(100);
 
-    public String username;
-    public UUID uuid;
+    public User user;
 
     public String heldItem;
 
@@ -40,8 +40,7 @@ public class EventDataBlockBreak extends EventData
     public void onReclaimed()
     {
         super.onReclaimed();
-        username = null;
-        uuid = null;
+        user = null;
         heldItem = null;
         blockName = null;
         tileName = null;
@@ -77,12 +76,11 @@ public class EventDataBlockBreak extends EventData
         preparedStmt.setInt(3, x);
         preparedStmt.setInt(4, y);
         preparedStmt.setInt(5, z);
-        preparedStmt.setString(6, username);
-        preparedStmt.setString(7, uuid.toString());
-        preparedStmt.setString(8, heldItem);
-        preparedStmt.setString(9, blockName);
-        preparedStmt.setInt(10, blockMeta);
-        preparedStmt.setString(11, tileName);
+        preparedStmt.setInt(6, user.id);
+        preparedStmt.setString(7, heldItem);
+        preparedStmt.setString(8, blockName);
+        preparedStmt.setInt(9, blockMeta);
+        preparedStmt.setString(10, tileName);
         preparedStmt.execute();
     }
 
@@ -100,8 +98,7 @@ public class EventDataBlockBreak extends EventData
     {
         EventDataBlockBreak object = get(System.currentTimeMillis(), event.world.provider.dimensionId, event.x, event.y, event.z);
 
-        object.username = event.getPlayer().getGameProfile().getName();
-        object.uuid = event.getPlayer().getGameProfile().getId();
+        object.user = UserDatabase.getUser(event.getPlayer());
         object.heldItem = heldItemAsString(event.getPlayer());
         object.blockName = Block.blockRegistry.getNameForObject(event.block);
         object.blockMeta = event.blockMetadata;

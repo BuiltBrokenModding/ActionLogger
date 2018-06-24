@@ -1,5 +1,7 @@
 package com.builtbroken.logger.event;
 
+import com.builtbroken.logger.ActionLogger;
+import com.builtbroken.logger.data.event.entity.EventDataEntityDeath;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -13,7 +15,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
  */
 public class EntityEventHandler
 {
-    @SubscribeEvent
+    //@SubscribeEvent
     public void itemPickupEvent(EntityItemPickupEvent event)
     { /*
         String data = "[ ";
@@ -34,23 +36,10 @@ public class EntityEventHandler
     @SubscribeEvent
     public void entityDeathEvent(LivingDeathEvent event)
     {
-        /*
-        String data = "[ ";
-        data += "T: " + event.source.damageType;
-        data += " | E: " + event.source.getEntity();
-        data += " | S: " + event.source.getSourceOfDamage();
-        data += " ]";
-
-        ActionLogger.thread.logAction(
-                event.entityLiving.worldObj,
-                (int) event.entityLiving.posX, (int) event.entityLiving.posY, (int) event.entityLiving.posZ,
-                ActionType.ENTITY_DEATH,
-                data,
-                event.entityLiving instanceof EntityPlayer ? (EntityPlayer) event.entityLiving : null);
-                */
+        ActionLogger.log(EventDataEntityDeath.get(event));
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public void entityAttackEvent(LivingAttackEvent event)
     {
         /*
@@ -70,7 +59,7 @@ public class EntityEventHandler
                 */
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public void entityHurtEvent(LivingHurtEvent event)
     {
         /*
@@ -90,7 +79,7 @@ public class EntityEventHandler
                 */
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public void entityJoinWorld(EntityJoinWorldEvent event)
     {
         /*

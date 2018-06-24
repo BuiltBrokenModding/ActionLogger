@@ -2,8 +2,6 @@ package com.builtbroken.logger.thread;
 
 import com.builtbroken.logger.ActionLogger;
 import com.builtbroken.logger.data.IEventData;
-import com.builtbroken.logger.database.DBConnection;
-import com.builtbroken.logger.database.EventDatabase;
 
 import java.sql.SQLException;
 
@@ -13,7 +11,7 @@ import java.sql.SQLException;
  */
 public class ThreadDatabase extends ThreadWriter
 {
-    DBConnection dbConnection;
+    boolean doingWrite = false;
 
     @Override
     public void run()
@@ -34,26 +32,16 @@ public class ThreadDatabase extends ThreadWriter
 
     protected void writeToDatabase(boolean all)
     {
-        if (dbConnection == null)
-        {
-            dbConnection = new DBConnection();
-            dbConnection.url = ActionLogger.database_url + ActionLogger.database_name;
-            dbConnection.username = ActionLogger.database_username;
-            dbConnection.password = ActionLogger.database_password;
-            dbConnection.start();
-
-            EventDatabase.generateTablesIfMissing(dbConnection.getConnection());
-        }
-
         int writes = 0;
-        while (!writeQueue.isEmpty() && writeQueue.peek() != null && (all || writes < 1000))
+        while (!writeQueue.isEmpty() && writeQueue.peek() != null && (all || writes < 1000) && run)
         {
             IEventData data = writeQueue.poll();
             if (data != null)
             {
+                doingWrite = true;
                 try
                 {
-                    data.writeToDataBase(dbConnection.getConnection());
+                    data.writeToDataBase(ActionLogger.getDbConnection().getConnection());
                     writes++;
                 }
                 catch (SQLException e)
@@ -61,23 +49,40 @@ public class ThreadDatabase extends ThreadWriter
                     e.printStackTrace();
                     writeQueue.add(data); //Add to try again
                 }
+                doingWrite = false;
             }
         }
     }
 
     @Override
-    public void saveAll()
+    public void saveAll(boolean exit)
     {
+        if (exit)
+        {
+            run = false;
+
+            if (doingWrite)
+            {
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
         writeToDatabase(true);
+        if (exit)
+        {
+            ActionLogger.getDbConnection().stop();
+        }
     }
 
     @Override
     public void stop()
     {
         super.stop();
-        if (dbConnection != null)
-        {
-            dbConnection.stop();
-        }
     }
 }

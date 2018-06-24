@@ -1,6 +1,9 @@
 package com.builtbroken.logger;
 
 import com.builtbroken.logger.data.IEventData;
+import com.builtbroken.logger.database.DBConnection;
+import com.builtbroken.logger.database.EventDatabase;
+import com.builtbroken.logger.database.UserDatabase;
 import com.builtbroken.logger.event.BlockEventHandler;
 import com.builtbroken.logger.event.EntityEventHandler;
 import com.builtbroken.logger.thread.ThreadDatabase;
@@ -40,6 +43,7 @@ public class ActionLogger
     public static String database_password = "";
 
     public static Logger logger = LogManager.getLogger("bbmactionlogger");
+    public static DBConnection dbConnection;
 
 
     @Mod.EventHandler
@@ -88,6 +92,7 @@ public class ActionLogger
         {
             thread = new ThreadDatabase();
         }
+        getDbConnection();
         thread.start();
     }
 
@@ -99,6 +104,23 @@ public class ActionLogger
             thread.stop();
             thread = null;
         }
+    }
+
+    public static DBConnection getDbConnection()
+    {
+        if (dbConnection == null)
+        {
+            dbConnection = new DBConnection();
+            dbConnection.url = ActionLogger.database_url + ActionLogger.database_name;
+            dbConnection.username = ActionLogger.database_username;
+            dbConnection.password = ActionLogger.database_password;
+            dbConnection.start();
+
+            UserDatabase.generateTablesIfMissing(dbConnection.getConnection());
+            EventDatabase.generateTablesIfMissing(dbConnection.getConnection());
+
+        }
+        return dbConnection;
     }
 
     public static void log(IEventData object)

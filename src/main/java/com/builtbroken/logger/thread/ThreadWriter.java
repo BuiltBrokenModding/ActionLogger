@@ -15,7 +15,7 @@ public abstract class ThreadWriter implements Runnable
 
     public Thread thread;
 
-    public abstract void saveAll();
+    public abstract void saveAll(boolean exit);
 
     public void start()
     {
@@ -26,6 +26,6 @@ public abstract class ThreadWriter implements Runnable
     public void stop()
     {
         run = false;
-        saveAll();
+        saveAll(true);
     }
 }

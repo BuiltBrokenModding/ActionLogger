@@ -4,6 +4,9 @@ import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.IDataPoolObject;
 import com.builtbroken.logger.data.IEventData;
 import com.builtbroken.logger.util.ALUtils;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -49,7 +52,7 @@ public abstract class EventData implements IEventData, IDataPoolObject
         return out;
     }
 
-    protected final static String heldItemAsString(EntityPlayer player)
+    protected static String heldItemAsString(EntityPlayer player)
     {
         ItemStack stack = player.getHeldItem();
         if (stack != null)
@@ -57,5 +60,22 @@ public abstract class EventData implements IEventData, IDataPoolObject
             return "HELD: " + stack.getUnlocalizedName();
         }
         return "HAND";
+    }
+
+    protected static String toString(Entity entity)
+    {
+        if (entity == null)
+        {
+            return null;
+        }
+        else if (entity instanceof EntityPlayer) //TODO move to lambda system in order to add more conversions
+        {
+            return ((EntityPlayer) entity).getGameProfile().getName() + " | " + ((EntityPlayer) entity).getGameProfile().getId();
+        }
+        else if (entity instanceof EntityTameable)
+        {
+            return EntityList.getEntityString(entity) + " || owner: " + toString(((EntityTameable) entity).getOwner());
+        }
+        return EntityList.getEntityString(entity);
     }
 }

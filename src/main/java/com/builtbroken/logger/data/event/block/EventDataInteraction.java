@@ -3,13 +3,14 @@ package com.builtbroken.logger.data.event.block;
 import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
 import com.builtbroken.logger.data.event.EventData;
+import com.builtbroken.logger.data.user.User;
+import com.builtbroken.logger.database.UserDatabase;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -17,13 +18,12 @@ import java.util.UUID;
  */
 public class EventDataInteraction extends EventData
 {
-    private final static String query = "INSERT INTO INTERACTION (time, dim, x, y, z, face, action, username, uuid, item, block, meta, tile)"
-            + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final static String query = "INSERT INTO INTERACTION (time, dim, x, y, z, face, action, player, item, block, meta, tile)"
+            + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static DataPool<EventDataInteraction> dataPool = new DataPool(100);
 
-    public String username;
-    public UUID uuid;
+    public User user;
     public PlayerInteractEvent.Action action;
 
     public String heldItem;
@@ -42,8 +42,7 @@ public class EventDataInteraction extends EventData
     public void onReclaimed()
     {
         super.onReclaimed();
-        username = null;
-        uuid = null;
+        user = null;
         action = null;
         heldItem = null;
         face = 0;
@@ -88,12 +87,11 @@ public class EventDataInteraction extends EventData
         preparedStmt.setInt(5, z);
         preparedStmt.setInt(6, face);
         preparedStmt.setInt(7, action.ordinal());
-        preparedStmt.setString(8, username);
-        preparedStmt.setString(9, uuid.toString());
-        preparedStmt.setString(10, heldItem);
-        preparedStmt.setString(11, blockName);
-        preparedStmt.setInt(12, blockMeta);
-        preparedStmt.setString(13, tileName);
+        preparedStmt.setInt(8, user.id);
+        preparedStmt.setString(9, heldItem);
+        preparedStmt.setString(10, blockName);
+        preparedStmt.setInt(11, blockMeta);
+        preparedStmt.setString(12, tileName);
         preparedStmt.execute();
     }
 
@@ -111,8 +109,7 @@ public class EventDataInteraction extends EventData
     {
         EventDataInteraction object = get(System.currentTimeMillis(), event.world.provider.dimensionId, event.x, event.y, event.z);
 
-        object.username = event.entityPlayer.getGameProfile().getName();
-        object.uuid = event.entityPlayer.getGameProfile().getId();
+        object.user = UserDatabase.getUser(event.entityPlayer);
         object.action = event.action;
         object.face = event.face;
         object.heldItem = heldItemAsString(event.entityPlayer);

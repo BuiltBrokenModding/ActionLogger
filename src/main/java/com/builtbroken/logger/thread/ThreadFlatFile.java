@@ -27,7 +27,7 @@ public class ThreadFlatFile extends ThreadWriter
             {
                 if (writeQueue.size() > 1000)
                 {
-                    saveAll();
+                    saveAll(false);
                 }
                 Thread.sleep(1000 * 60 * 10);
             }
@@ -38,7 +38,8 @@ public class ThreadFlatFile extends ThreadWriter
         }
     }
 
-    public void saveAll()
+    @Override
+    public void saveAll(boolean exit)
     {
         if (!writeQueue.isEmpty() && writeQueue.peek() != null)
         {
@@ -61,7 +62,7 @@ public class ThreadFlatFile extends ThreadWriter
 
             FileOutputStream fos = new FileOutputStream(file);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-            while (!writeQueue.isEmpty() && writeQueue.peek() != null && lineCount < ActionLogger.lineCountLimit)
+            while (!writeQueue.isEmpty() && writeQueue.peek() != null && lineCount < ActionLogger.lineCountLimit && run)
             {
                 final IEventData data = writeQueue.poll();
                 if (data != null)
