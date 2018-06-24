@@ -1,5 +1,6 @@
-package com.builtbroken.logger;
+package com.builtbroken.logger.thread;
 
+import com.builtbroken.logger.ActionLogger;
 import com.builtbroken.logger.data.ActionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

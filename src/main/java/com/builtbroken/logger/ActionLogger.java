@@ -1,6 +1,8 @@
 package com.builtbroken.logger;
 
 import com.builtbroken.logger.event.BlockEventHandler;
+import com.builtbroken.logger.event.EntityEventHandler;
+import com.builtbroken.logger.thread.ThreadWriter;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -16,9 +18,14 @@ import java.io.File;
 @Mod(modid = "bbmactionlogger", acceptableRemoteVersions = "*")
 public class ActionLogger
 {
+    //Stuff for flat files
     public static File saveFolder;
     public static int lineCountLimit = 10000;
     public static ThreadWriter thread;
+
+    //Database stuff
+    public static boolean useDatabase = false;
+
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -29,22 +36,31 @@ public class ActionLogger
             saveFolder.mkdirs();
         }
 
-        BlockEventHandler handler = new BlockEventHandler();
-        MinecraftForge.EVENT_BUS.register(handler);
+        BlockEventHandler blockEventHandler = new BlockEventHandler();
+        MinecraftForge.EVENT_BUS.register(blockEventHandler);
+
+        EntityEventHandler entityEventHandler = new EntityEventHandler();
+        MinecraftForge.EVENT_BUS.register(entityEventHandler);
     }
 
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event)
     {
-        thread = new ThreadWriter();
-        new Thread(thread).start();
+        if (!useDatabase)
+        {
+            thread = new ThreadWriter();
+            new Thread(thread).start();
+        }
     }
 
     @Mod.EventHandler
     public void serverStop(FMLServerStoppingEvent event)
     {
-        thread.run = false;
-        thread.saveAll();
-        thread = null;
+        if (thread != null)
+        {
+            thread.run = false;
+            thread.saveAll();
+            thread = null;
+        }
     }
 }
