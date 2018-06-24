@@ -1,9 +1,9 @@
 package com.builtbroken.logger.event;
 
 import com.builtbroken.logger.ActionLogger;
-import com.builtbroken.logger.data.event.EventDataBlockBreak;
-import com.builtbroken.logger.data.event.EventDataBlockPlace;
-import com.builtbroken.logger.data.event.EventDataInteraction;
+import com.builtbroken.logger.data.event.block.EventDataBlockBreak;
+import com.builtbroken.logger.data.event.block.EventDataBlockPlace;
+import com.builtbroken.logger.data.event.block.EventDataInteraction;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;

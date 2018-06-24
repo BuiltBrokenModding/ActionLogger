@@ -1,7 +1,8 @@
-package com.builtbroken.logger.data.event;
+package com.builtbroken.logger.data.event.block;
 
 import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
+import com.builtbroken.logger.data.event.EventData;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
