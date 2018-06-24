@@ -1,8 +1,11 @@
 package com.builtbroken.logger.thread;
 
 import com.builtbroken.logger.ActionLogger;
+import com.builtbroken.logger.data.IEventData;
 import com.builtbroken.logger.database.DBConnection;
 import com.builtbroken.logger.database.EventDatabase;
+
+import java.sql.SQLException;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -19,8 +22,8 @@ public class ThreadDatabase extends ThreadWriter
         {
             try
             {
-                writeToDatabase();
-                Thread.sleep(100);
+                writeToDatabase(false);
+                Thread.sleep(1000);
             }
             catch (Exception e)
             {
@@ -29,7 +32,7 @@ public class ThreadDatabase extends ThreadWriter
         }
     }
 
-    protected void writeToDatabase()
+    protected void writeToDatabase(boolean all)
     {
         if (dbConnection == null)
         {
@@ -41,12 +44,31 @@ public class ThreadDatabase extends ThreadWriter
 
             EventDatabase.generateTablesIfMissing(dbConnection.getConnection());
         }
+
+        int writes = 0;
+        while (!writeQueue.isEmpty() && writeQueue.peek() != null && (all || writes < 1000))
+        {
+            IEventData data = writeQueue.poll();
+            if (data != null)
+            {
+                try
+                {
+                    data.writeToDataBase(dbConnection.getConnection());
+                    writes++;
+                }
+                catch (SQLException e)
+                {
+                    e.printStackTrace();
+                    writeQueue.add(data); //Add to try again
+                }
+            }
+        }
     }
 
     @Override
     public void saveAll()
     {
-        writeToDatabase();
+        writeToDatabase(true);
     }
 
     @Override

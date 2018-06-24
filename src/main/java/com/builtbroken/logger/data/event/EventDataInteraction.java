@@ -80,25 +80,26 @@ public class EventDataInteraction extends EventData
     public void writeToDataBase(Connection connection) throws SQLException
     {
         PreparedStatement preparedStmt = connection.prepareStatement(query);
-        preparedStmt.setInt(1, dim);
-        preparedStmt.setInt(2, x);
-        preparedStmt.setInt(3, y);
-        preparedStmt.setInt(4, z);
-        preparedStmt.setInt(5, face);
-        preparedStmt.setInt(6, action.ordinal());
-        preparedStmt.setString(7, username);
-        preparedStmt.setString(8, uuid.toString());
-        preparedStmt.setString(9, heldItem);
-        preparedStmt.setString(10, blockName);
-        preparedStmt.setInt(11, blockMeta);
-        preparedStmt.setString(12, tileName);
+        preparedStmt.setLong(1, time);
+        preparedStmt.setInt(2, dim);
+        preparedStmt.setInt(3, x);
+        preparedStmt.setInt(4, y);
+        preparedStmt.setInt(5, z);
+        preparedStmt.setInt(6, face);
+        preparedStmt.setInt(7, action.ordinal());
+        preparedStmt.setString(8, username);
+        preparedStmt.setString(9, uuid.toString());
+        preparedStmt.setString(10, heldItem);
+        preparedStmt.setString(11, blockName);
+        preparedStmt.setInt(12, blockMeta);
+        preparedStmt.setString(13, tileName);
         preparedStmt.execute();
     }
 
     public static EventDataInteraction get(long time, int dim, int x, int y, int z)
     {
         EventDataInteraction object = dataPool.get();
-        if (object != null)
+        if (object == null)
         {
             object = new EventDataInteraction(time, dim, x, y, z);
         }
@@ -108,6 +109,7 @@ public class EventDataInteraction extends EventData
     public static EventDataInteraction get(PlayerInteractEvent event)
     {
         EventDataInteraction object = get(System.currentTimeMillis(), event.world.provider.dimensionId, event.x, event.y, event.z);
+
         object.username = event.entityPlayer.getGameProfile().getName();
         object.uuid = event.entityPlayer.getGameProfile().getId();
         object.action = event.action;

@@ -14,20 +14,20 @@ import java.sql.SQLException;
 public class EventDatabase
 {
     private static final String CREATE_INTERACTION_TABLE = "CREATE TABLE INTERACTION " +
-            "(ID int NOT NULL AUTO_INCREMENT," +
-            "time UNSIGNED BIGINT," +
-            "dim int," +
-            "x int," +
-            "y int," +
-            "z int," +
-            "face TINYINT," +
-            "action TINYINT," +
-            "username varchar(255)," +
-            "uuid varchar(255)," +
-            "item varchar(255)," +
-            "block varchar(255)," +
-            "meta TINYINT," +
-            "tile varchar(255)," +
+            "(ID int NOT NULL AUTO_INCREMENT, " +
+            "time BIGINT, " +
+            "dim int, " +
+            "x int, " +
+            "y int, " +
+            "z int, " +
+            "face TINYINT, " +
+            "action TINYINT, " +
+            "username varchar(255), " +
+            "uuid varchar(255), " +
+            "item varchar(255), " +
+            "block varchar(255), " +
+            "meta TINYINT, " +
+            "tile varchar(255), " +
             "PRIMARY KEY (ID))";
 
     public static void generateTablesIfMissing(Connection connection)
@@ -54,7 +54,7 @@ public class EventDatabase
         try
         {
             String query = "SELECT count(*)" +
-                    "FROM information_schema.tables" +
+                    "FROM information_schema.tables " +
                     "WHERE table_schema = '" + db + "' AND table_name = '" + table + "'";
 
             PreparedStatement preparedStmt = connection.prepareStatement(query);

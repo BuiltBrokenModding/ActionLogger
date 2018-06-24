@@ -63,7 +63,7 @@ public class ActionLogger
 
 
         //Load configurations
-        Configuration configuration = new Configuration(event.getModConfigurationDirectory(), "bbm/actionlogger/main.cfg");
+        Configuration configuration = new Configuration(new File(event.getModConfigurationDirectory(), "bbm/actionlogger/main.cfg"));
         configuration.load();
 
         lineCountLimit = configuration.getInt("line_limit", "flat_file", lineCountLimit, 100, 1000000, "Number of lines before making a new flat file");
