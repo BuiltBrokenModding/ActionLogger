@@ -45,10 +45,29 @@ public class EventDatabase
             "tile varchar(255), " +
             "PRIMARY KEY (ID))";
 
+    private static final String CREATE_BLOCK_PLACE_TABLE = "CREATE TABLE BLOCK_PLACE " +
+            "(ID int NOT NULL AUTO_INCREMENT, " +
+            "time BIGINT, " +
+            "dim int, " +
+            "x int, " +
+            "y int, " +
+            "z int, " +
+            "username varchar(255), " +
+            "uuid varchar(255), " +
+            "item varchar(255), " +
+            "block varchar(255), " +
+            "meta TINYINT, " +
+            "tile varchar(255), " +
+            "block_new varchar(255), " +
+            "meta_new TINYINT, " +
+            "placed_against varchar(255), " +
+            "PRIMARY KEY (ID))";
+
     public static void generateTablesIfMissing(Connection connection)
     {
         createTableIfMissing(connection, "INTERACTION", CREATE_INTERACTION_TABLE);
         createTableIfMissing(connection, "BLOCK_BREAK", CREATE_BLOCK_BREAK_TABLE);
+        createTableIfMissing(connection, "BLOCK_PLACE", CREATE_BLOCK_PLACE_TABLE);
     }
 
     protected static void createTableIfMissing(Connection connection, String name, String create_query)
