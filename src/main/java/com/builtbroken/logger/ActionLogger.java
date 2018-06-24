@@ -46,7 +46,7 @@ public class ActionLogger
     public void preInit(FMLPreInitializationEvent event)
     {
         //Init files
-        saveFolder = new File(event.getModConfigurationDirectory(), "bbm/action_logger/logs");
+        saveFolder = new File(event.getModConfigurationDirectory(), "bbm/actionlogger/logs");
         if (!saveFolder.exists())
         {
             logger.info("Creating save folder(s) for logs: " + saveFolder);
@@ -63,18 +63,18 @@ public class ActionLogger
 
 
         //Load configurations
-        Configuration configuratition = new Configuration(event.getModConfigurationDirectory(), "bbm/action_logger/config.cfg");
-        configuratition.load();
+        Configuration configuration = new Configuration(event.getModConfigurationDirectory(), "bbm/actionlogger/main.cfg");
+        configuration.load();
 
-        lineCountLimit = configuratition.getInt("line_limit", "flat_file", lineCountLimit, 100, 1000000, "Number of lines before making a new flat file");
+        lineCountLimit = configuration.getInt("line_limit", "flat_file", lineCountLimit, 100, 1000000, "Number of lines before making a new flat file");
 
-        useDatabase = configuratition.getBoolean("enable", "database", useDatabase, "Allows enabling MySQL database handling, will disable flat file.");
-        database_url = configuratition.getString("url", "database", database_url, "URL path to use to get to the database");
-        database_name = configuratition.getString("name", "database", database_name, "Name of the database to use");
-        database_username = configuratition.getString("username", "database", database_username, "Username to use to access the database");
-        database_password = configuratition.getString("password", "database", database_password, "Password to use to access the database");
+        useDatabase = configuration.getBoolean("enable", "database", useDatabase, "Allows enabling MySQL database handling, will disable flat file.");
+        database_url = configuration.getString("url", "database", database_url, "URL path to use to get to the database");
+        database_name = configuration.getString("name", "database", database_name, "Name of the database to use");
+        database_username = configuration.getString("username", "database", database_username, "Username to use to access the database");
+        database_password = configuration.getString("password", "database", database_password, "Password to use to access the database");
 
-        configuratition.save();
+        configuration.save();
     }
 
     @Mod.EventHandler

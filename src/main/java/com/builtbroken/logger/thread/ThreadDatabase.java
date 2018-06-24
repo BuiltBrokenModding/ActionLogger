@@ -39,7 +39,7 @@ public class ThreadDatabase extends ThreadWriter
             dbConnection.password = ActionLogger.database_password;
             dbConnection.start();
 
-            EventDatabase.generateTablesIfMissing(dbConnection);
+            EventDatabase.generateTablesIfMissing(dbConnection.getConnection());
         }
     }
 
