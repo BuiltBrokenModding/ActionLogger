@@ -1,5 +1,7 @@
 package com.builtbroken.logger.database;
 
+import com.builtbroken.logger.ActionLogger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,28 +16,33 @@ public class DBConnection
     public String username = "root";
     public String password = "";
 
-    private static Connection connection;
+    private Connection connection;
+
+    public Connection getConnection()
+    {
+        return connection;
+    }
 
     public void start()
     {
-        System.out.println("Loading driver...");
+        ActionLogger.logger.info("Loading driver...");
 
         try
         {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded!");
+            ActionLogger.logger.info("Driver loaded!");
         }
         catch (ClassNotFoundException e)
         {
             throw new IllegalStateException("Cannot find the driver in the classpath!", e);
         }
 
-        System.out.println("Connecting database...");
+        ActionLogger.logger.info("Connecting database...");
 
         try
         {
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Database connected!");
+            ActionLogger.logger.info("Database connected!");
         }
         catch (SQLException e)
         {

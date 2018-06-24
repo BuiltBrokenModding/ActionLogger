@@ -10,4 +10,9 @@ public interface IDataPoolObject
      * Called to clear any cached data
      */
     void onReclaimed();
+
+    /**
+     * Called to have the object reclaim into its pool
+     */
+    void reclaim();
 }

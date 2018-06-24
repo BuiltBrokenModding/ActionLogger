@@ -1,11 +1,8 @@
 package com.builtbroken.logger.event;
 
 import com.builtbroken.logger.ActionLogger;
-import com.builtbroken.logger.data.ActionType;
+import com.builtbroken.logger.data.event.EventDataInteraction;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -18,28 +15,13 @@ public class BlockEventHandler
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event)
     {
-        EntityPlayer player = event.entityPlayer;
-        String data = "[ H: " + heldItemAsString(player);
-        data += " - A: " + event.action;
-        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
-        {
-            data += " - F: " + event.face;
-            data += " - B: " + Block.blockRegistry.getNameForObject(event.world.getBlock(event.x, event.y, event.z));
-            data += " - M: " + event.world.getBlock(event.x, event.y, event.z);
-            data += " - T: " + event.world.getTileEntity(event.x, event.y, event.z);
-        }
-        data += " ]";
-
-        ActionLogger.thread.logAction(
-                event.world, event.x, event.y, event.z,
-                ActionType.INTERACTION,
-                data,
-                player);
+        ActionLogger.log(EventDataInteraction.get(event));
     }
 
     @SubscribeEvent
     public void onPlaceBlock(BlockEvent.PlaceEvent event)
     {
+        /*
         EntityPlayer player = event.player;
 
         String data = "[ H: " + heldItemAsString(player);
@@ -55,11 +37,13 @@ public class BlockEventHandler
                 ActionType.BLOCK_PLACE,
                 data,
                 player);
+                */
     }
 
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event)
     {
+        /*
         EntityPlayer player = event.getPlayer();
 
         String data = "[ H: " + heldItemAsString(player);
@@ -73,16 +57,7 @@ public class BlockEventHandler
                 ActionType.BLOCK_BREAK,
                 data,
                 player);
-    }
-
-    private String heldItemAsString(EntityPlayer player)
-    {
-        ItemStack stack = player.getHeldItem();
-        if (stack != null)
-        {
-            return "HELD: " + stack.getUnlocalizedName();
-        }
-        return "HAND";
+                */
     }
 
 }

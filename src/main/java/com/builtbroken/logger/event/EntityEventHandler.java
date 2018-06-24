@@ -1,11 +1,6 @@
 package com.builtbroken.logger.event;
 
-import com.builtbroken.logger.ActionLogger;
-import com.builtbroken.logger.data.ActionType;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -20,7 +15,7 @@ public class EntityEventHandler
 {
     @SubscribeEvent
     public void itemPickupEvent(EntityItemPickupEvent event)
-    {
+    { /*
         String data = "[ ";
         data += "I: " + Item.itemRegistry.getNameForObject(event.item.getEntityItem().getItem());
         data += " | M: " + event.item.getEntityItem().getItemDamage();
@@ -33,11 +28,13 @@ public class EntityEventHandler
                 ActionType.ITEM_PICKUP,
                 data,
                 event.entityLiving instanceof EntityPlayer ? (EntityPlayer) event.entityLiving : null);
+                */
     }
 
     @SubscribeEvent
     public void entityDeathEvent(LivingDeathEvent event)
     {
+        /*
         String data = "[ ";
         data += "T: " + event.source.damageType;
         data += " | E: " + event.source.getEntity();
@@ -50,11 +47,13 @@ public class EntityEventHandler
                 ActionType.ENTITY_DEATH,
                 data,
                 event.entityLiving instanceof EntityPlayer ? (EntityPlayer) event.entityLiving : null);
+                */
     }
 
     @SubscribeEvent
     public void entityAttackEvent(LivingAttackEvent event)
     {
+        /*
         String data = "[ ";
         data += "T: " + event.source.damageType;
         data += " | E: " + event.source.getEntity();
@@ -68,11 +67,13 @@ public class EntityEventHandler
                 ActionType.ENTITY_ATTACK,
                 data,
                 event.entityLiving instanceof EntityPlayer ? (EntityPlayer) event.entityLiving : null);
+                */
     }
 
     @SubscribeEvent
     public void entityHurtEvent(LivingHurtEvent event)
     {
+        /*
         String data = "[ ";
         data += "T: " + event.source.damageType;
         data += " | E: " + event.source.getEntity();
@@ -86,11 +87,13 @@ public class EntityEventHandler
                 ActionType.ENTITY_HURT,
                 data,
                 event.entityLiving instanceof EntityPlayer ? (EntityPlayer) event.entityLiving : null);
+                */
     }
 
     @SubscribeEvent
     public void entityJoinWorld(EntityJoinWorldEvent event)
     {
+        /*
         String data = "[ ";
         data += " I: " + event.entity.getEntityId();
         data += " | S: " + EntityList.getEntityString(event.entity);
@@ -105,5 +108,6 @@ public class EntityEventHandler
                 ActionType.ENTITY_ENTER_WORLD,
                 data,
                 event.entity instanceof EntityPlayer ? (EntityPlayer) event.entity : null);
+                */
     }
 }
