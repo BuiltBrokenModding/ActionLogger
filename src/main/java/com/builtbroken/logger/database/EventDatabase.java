@@ -10,7 +10,12 @@ import java.sql.Connection;
  */
 public class EventDatabase
 {
-    private static final String CREATE_INTERACTION_TABLE = "CREATE TABLE INTERACTION " +
+    public static final String INTERACTION_TABLE = "AL_INTERACTION";
+    public static final String BLOCK_BREAK_TABLE = "AL_BLOCK_BREAK";
+    public static final String BLOCK_PLACE_TABLE = "AL_BLOCK_PLACE";
+    public static final String ENTITY_DEATH_TABLE = "AL_ENTITY_DEATH";
+
+    private static final String CREATE_INTERACTION_TABLE = "CREATE TABLE " + INTERACTION_TABLE + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
             "time BIGINT, " +
             "dim int, " +
@@ -27,7 +32,7 @@ public class EventDatabase
             "PRIMARY KEY (ID), " +
             "FOREIGN KEY (player) REFERENCES PLAYERS(id))";
 
-    private static final String CREATE_BLOCK_BREAK_TABLE = "CREATE TABLE BLOCK_BREAK " +
+    private static final String CREATE_BLOCK_BREAK_TABLE = "CREATE TABLE " + BLOCK_BREAK_TABLE + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
             "time BIGINT, " +
             "dim int, " +
@@ -42,7 +47,7 @@ public class EventDatabase
             "PRIMARY KEY (ID), " +
             "FOREIGN KEY (player) REFERENCES PLAYERS(id))";
 
-    private static final String CREATE_BLOCK_PLACE_TABLE = "CREATE TABLE BLOCK_PLACE " +
+    private static final String CREATE_BLOCK_PLACE_TABLE = "CREATE TABLE " + BLOCK_PLACE_TABLE + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
             "time BIGINT, " +
             "dim int, " +
@@ -60,7 +65,7 @@ public class EventDatabase
             "PRIMARY KEY (ID), " +
             "FOREIGN KEY (player) REFERENCES PLAYERS(id))";
 
-    private static final String CREATE_ENTITY_DEATH_TABLE = "CREATE TABLE ENTITY_DEATH " +
+    private static final String CREATE_ENTITY_DEATH_TABLE = "CREATE TABLE " + ENTITY_DEATH_TABLE +
             "(ID int NOT NULL AUTO_INCREMENT, " +
             "time BIGINT, " +
             "dim int, " +

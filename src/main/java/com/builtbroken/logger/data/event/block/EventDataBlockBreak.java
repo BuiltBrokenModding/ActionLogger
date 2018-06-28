@@ -4,6 +4,7 @@ import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
 import com.builtbroken.logger.data.event.EventData;
 import com.builtbroken.logger.data.user.User;
+import com.builtbroken.logger.database.EventDatabase;
 import com.builtbroken.logger.database.UserDatabase;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.world.BlockEvent;
@@ -18,7 +19,7 @@ import java.sql.SQLException;
  */
 public class EventDataBlockBreak extends EventData
 {
-    private final static String query = "INSERT INTO BLOCK_BREAK (time, dim, x, y, z, player, item, block, meta, tile)"
+    private final static String query = "INSERT INTO " + EventDatabase.BLOCK_BREAK_TABLE + " (time, dim, x, y, z, player, item, block, meta, tile)"
             + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static DataPool<EventDataBlockBreak> dataPool = new DataPool(100);

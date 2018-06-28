@@ -4,6 +4,7 @@ import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
 import com.builtbroken.logger.data.event.EventData;
 import com.builtbroken.logger.data.user.User;
+import com.builtbroken.logger.database.EventDatabase;
 import com.builtbroken.logger.database.UserDatabase;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -18,7 +19,7 @@ import java.sql.SQLException;
  */
 public class EventDataInteraction extends EventData
 {
-    private final static String query = "INSERT INTO INTERACTION (time, dim, x, y, z, face, action, player, item, block, meta, tile)"
+    private final static String query = "INSERT INTO " + EventDatabase.INTERACTION_TABLE + " (time, dim, x, y, z, face, action, player, item, block, meta, tile)"
             + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static DataPool<EventDataInteraction> dataPool = new DataPool(100);

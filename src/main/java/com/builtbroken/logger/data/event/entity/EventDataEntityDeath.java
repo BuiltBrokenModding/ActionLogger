@@ -3,6 +3,7 @@ package com.builtbroken.logger.data.event.entity;
 import com.builtbroken.logger.data.ActionType;
 import com.builtbroken.logger.data.DataPool;
 import com.builtbroken.logger.data.event.EventData;
+import com.builtbroken.logger.database.EventDatabase;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import java.sql.Connection;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
  */
 public class EventDataEntityDeath extends EventData
 {
-    private final static String query = "INSERT INTO ENTITY_DEATH (time, dim, x, y, z, entity, type, source, cause)"
+    private final static String query = "INSERT INTO " + EventDatabase.ENTITY_DEATH_TABLE + " (time, dim, x, y, z, entity, type, source, cause)"
             + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static DataPool<EventDataEntityDeath> dataPool = new DataPool(100);

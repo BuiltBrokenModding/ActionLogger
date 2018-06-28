@@ -5,7 +5,10 @@ import com.builtbroken.logger.data.user.User;
 import com.builtbroken.logger.util.DBUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -19,16 +22,18 @@ public class UserDatabase
     private static final HashMap<UUID, User> uuidToUser = new HashMap();
     private static final HashMap<Integer, User> idToUser = new HashMap();
 
-    private static final String CREATE_USER_TABLE = "CREATE TABLE PLAYERS " +
+    private static final String TABLE_PLAYERS = "AL_PLAYERS";
+
+    private static final String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_PLAYERS + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
             "username varchar(255), " +
             "uuid varchar(255), " +
             "PRIMARY KEY (ID))";
 
-    private final static String INSERT_STATEMENT = "INSERT INTO PLAYERS (username, uuid)"
+    private final static String INSERT_STATEMENT = "INSERT INTO " + TABLE_PLAYERS + " (username, uuid)"
             + " values (?, ?)";
 
-    private final static String SELECT_STATEMENT = "SELECT * FROM PLAYERS WHERE uuid = ?";
+    private final static String SELECT_STATEMENT = "SELECT * FROM " + TABLE_PLAYERS + " WHERE uuid = ?";
 
 
     //TODO add way to track user's name changes
@@ -71,7 +76,7 @@ public class UserDatabase
             }
         }
 
-        if(user != null)
+        if (user != null)
         {
             nameToUser.put(user.name.toLowerCase(), user);
             uuidToUser.put(user.uuid, user);
