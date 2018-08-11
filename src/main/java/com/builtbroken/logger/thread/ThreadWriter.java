@@ -1,5 +1,6 @@
 package com.builtbroken.logger.thread;
 
+import com.builtbroken.logger.ActionLogger;
 import com.builtbroken.logger.data.IEventData;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -19,12 +20,14 @@ public abstract class ThreadWriter implements Runnable
 
     public void start()
     {
-        thread = new Thread(this);
+        ActionLogger.logger.info("ThreadWriter: Starting...");
+        thread = new Thread(this, "ActionLoggerThread");
         thread.start();
     }
 
     public void stop()
     {
+        ActionLogger.logger.info("ThreadWriter: Ending...");
         run = false;
         saveAll(true);
     }

@@ -22,7 +22,7 @@ public class UserDatabase
     private static final HashMap<UUID, User> uuidToUser = new HashMap();
     private static final HashMap<Integer, User> idToUser = new HashMap();
 
-    private static final String TABLE_PLAYERS = "AL_PLAYERS";
+    public static final String TABLE_PLAYERS = "AL_PLAYERS";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_PLAYERS + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
@@ -115,6 +115,6 @@ public class UserDatabase
 
     public static void generateTablesIfMissing(Connection connection)
     {
-        DBUtils.createTableIfMissing(connection, "PLAYERS", CREATE_USER_TABLE);
+        DBUtils.createTableIfMissing(connection, TABLE_PLAYERS, CREATE_USER_TABLE);
     }
 }

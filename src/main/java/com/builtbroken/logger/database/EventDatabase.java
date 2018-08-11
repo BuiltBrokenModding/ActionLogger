@@ -30,7 +30,7 @@ public class EventDatabase
             "meta TINYINT, " +
             "tile varchar(255), " +
             "PRIMARY KEY (ID), " +
-            "FOREIGN KEY (player) REFERENCES PLAYERS(id))";
+            "FOREIGN KEY (player) REFERENCES " + UserDatabase.TABLE_PLAYERS + "(id))";
 
     private static final String CREATE_BLOCK_BREAK_TABLE = "CREATE TABLE " + BLOCK_BREAK_TABLE + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
@@ -45,7 +45,7 @@ public class EventDatabase
             "meta TINYINT, " +
             "tile varchar(255), " +
             "PRIMARY KEY (ID), " +
-            "FOREIGN KEY (player) REFERENCES PLAYERS(id))";
+            "FOREIGN KEY (player) REFERENCES " + UserDatabase.TABLE_PLAYERS + "(id))";
 
     private static final String CREATE_BLOCK_PLACE_TABLE = "CREATE TABLE " + BLOCK_PLACE_TABLE + " " +
             "(ID int NOT NULL AUTO_INCREMENT, " +
@@ -63,7 +63,7 @@ public class EventDatabase
             "meta_new TINYINT, " +
             "placed_against varchar(255), " +
             "PRIMARY KEY (ID), " +
-            "FOREIGN KEY (player) REFERENCES PLAYERS(id))";
+            "FOREIGN KEY (player) REFERENCES " + UserDatabase.TABLE_PLAYERS + "(id))";
 
     private static final String CREATE_ENTITY_DEATH_TABLE = "CREATE TABLE " + ENTITY_DEATH_TABLE +
             "(ID int NOT NULL AUTO_INCREMENT, " +
@@ -80,10 +80,10 @@ public class EventDatabase
 
     public static void generateTablesIfMissing(Connection connection)
     {
-        DBUtils.createTableIfMissing(connection, "INTERACTION", CREATE_INTERACTION_TABLE);
-        DBUtils.createTableIfMissing(connection, "BLOCK_BREAK", CREATE_BLOCK_BREAK_TABLE);
-        DBUtils.createTableIfMissing(connection, "BLOCK_PLACE", CREATE_BLOCK_PLACE_TABLE);
+        DBUtils.createTableIfMissing(connection, INTERACTION_TABLE, CREATE_INTERACTION_TABLE);
+        DBUtils.createTableIfMissing(connection, BLOCK_BREAK_TABLE, CREATE_BLOCK_BREAK_TABLE);
+        DBUtils.createTableIfMissing(connection, BLOCK_PLACE_TABLE, CREATE_BLOCK_PLACE_TABLE);
 
-        DBUtils.createTableIfMissing(connection, "ENTITY_DEATH", CREATE_ENTITY_DEATH_TABLE);
+        DBUtils.createTableIfMissing(connection, ENTITY_DEATH_TABLE, CREATE_ENTITY_DEATH_TABLE);
     }
 }

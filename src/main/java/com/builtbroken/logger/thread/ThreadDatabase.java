@@ -16,24 +16,30 @@ public class ThreadDatabase extends ThreadWriter
     @Override
     public void run()
     {
+        ActionLogger.logger.info("ThreadDatabase: Starting...");
         while (run)
         {
             try
             {
                 writeToDatabase(false);
-                Thread.sleep(1000);
+                Thread.sleep(ActionLogger.database_save_time);
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                ActionLogger.logger.info("ThreadDatabase: Error database thread has hit unexpected error", e);
             }
         }
+        ActionLogger.logger.info("ThreadDatabase: Ending...");
     }
 
     protected void writeToDatabase(boolean all)
     {
         int writes = 0;
-        while (!writeQueue.isEmpty() && writeQueue.peek() != null && (all || writes < 1000) && run)
+        while (
+                !writeQueue.isEmpty()
+                        && writeQueue.peek() != null
+                        && (all || writes < ActionLogger.database_write_limit || ActionLogger.database_save_time <= -1)
+                        && run)
         {
             IEventData data = writeQueue.poll();
             if (data != null)
@@ -46,11 +52,16 @@ public class ThreadDatabase extends ThreadWriter
                 }
                 catch (SQLException e)
                 {
-                    e.printStackTrace();
+                    ActionLogger.logger.info("ThreadDatabase: Error, failed to write to DB", e);
                     writeQueue.add(data); //Add to try again
                 }
                 doingWrite = false;
             }
+        }
+
+        if (ActionLogger.database_log_writes)
+        {
+            ActionLogger.logger.info("ThreadDatabase: Wrote " + writes + " entries to the database");
         }
     }
 
@@ -69,7 +80,7 @@ public class ThreadDatabase extends ThreadWriter
                 }
                 catch (InterruptedException e)
                 {
-                    e.printStackTrace();
+                    ActionLogger.logger.info("ThreadDatabase: Error sleeping after save-all... can sorta ignore.", e);
                 }
             }
         }
